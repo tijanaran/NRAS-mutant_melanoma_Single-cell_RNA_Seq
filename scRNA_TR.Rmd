@@ -1,0 +1,748 @@
+---
+title: "NRAmut melanoma"
+author: "Tijana Randic"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Libraries
+```{r, warning=FALSE, message=FALSE}
+
+library(Seurat)
+library(Matrix)
+library(gdata)
+library(utils)
+library(liger)
+library(SingleCellExperiment)
+library(destiny)
+library(scater)
+library(clusterExperiment)
+library(gam)
+library(corrplot)
+library(ggplot2)
+library(ggthemes)
+library(tidyr)
+library(forcats)
+library(SCopeLoomR)
+library(AUCell)
+library(SCENIC)
+library(KernSmooth)
+library(RColorBrewer)
+library(plotly)
+library(BiocParallel)
+library(grid)
+library(ComplexHeatmap)
+library(SeuratWrappers)
+library(monocle)
+
+```
+
+#Counts
+```{r}
+
+counts1 <- read.table(file = paste0('./TISKM1_S1_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts2 <- read.table(file = paste0('./TISKM2_S2_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts3 <- read.table(file = paste0('./TISKM3_S3_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts4 <- read.table(file = paste0('./TISKM4_S4_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts5 <- read.table(file = paste0('./TI21_S1_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts6 <- read.table(file = paste0('./TI22_S2_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts7 <- read.table(file = paste0('./TI23_S3_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts8 <- read.table(file = paste0('./TI24_S4_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts9 <- read.table(file = paste0('./TI25_S1_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts10 <- read.table(file = paste0('./TI26_S2_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts11 <- read.table(file = paste0('./TI27_S3_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts12 <- read.table(file = paste0('./TI28_S4_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts13 <- read.table(file = paste0('./TI41_S1_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts14 <- read.table(file = paste0('./TI42_S2_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts15 <- read.table(file = paste0('./TI43_S3_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+counts16 <- read.table(file = paste0('./TI44_S4_DGE.txt'), sep='\t', header = TRUE, row.names=1)
+
+y<- cumsum(sort(colSums(counts1),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts1 <- counts1[,1:1000]
+
+y<- cumsum(sort(colSums(counts2),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts2 <- counts2[,1:1000]
+
+y<- cumsum(sort(colSums(counts3),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts3 <- counts3[,1:1000]
+
+y<- cumsum(sort(colSums(counts4),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts4 <- counts4[,1:1000]
+
+################
+y<- cumsum(sort(colSums(counts5),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts5 <- counts5[,1:1000]
+
+y<- cumsum(sort(colSums(counts6),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts6 <- counts6[,1:1000]
+
+y<- cumsum(sort(colSums(counts7),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts7 <- counts7[,1:1000]
+
+y<- cumsum(sort(colSums(counts8),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts8 <- counts8[,1:1000]
+
+################
+y<- cumsum(sort(colSums(counts9),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts9 <- counts9[,1:1000]
+
+y<- cumsum(sort(colSums(counts10),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts10 <- counts10[,1:1000]
+
+y<- cumsum(sort(colSums(counts11),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts11 <- counts11[,1:1000]
+
+y<- cumsum(sort(colSums(counts12),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts12 <- counts12[,1:1000]
+
+################
+y<- cumsum(sort(colSums(counts13),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts13 <- counts13[,1:1000]
+
+y<- cumsum(sort(colSums(counts14),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts14 <- counts14[,1:1000]
+
+y<- cumsum(sort(colSums(counts15),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts15 <- counts15[,1:1000]
+
+y<- cumsum(sort(colSums(counts16),TRUE))
+x<-c(1:length(y))
+plot(x, y, pch=19,xlab="Cells",ylab="Cumulative Total mRNA")
+counts16 <- counts16[,1:1000]
+
+#
+matrix1 <- as(as.matrix(counts1), "dgCMatrix")
+matrix2 <- as(as.matrix(counts2), "dgCMatrix")
+matrix3 <- as(as.matrix(counts3), "dgCMatrix")
+matrix4 <- as(as.matrix(counts4), "dgCMatrix")
+
+matrix5 <- as(as.matrix(counts5), "dgCMatrix")
+matrix6 <- as(as.matrix(counts6), "dgCMatrix")
+matrix7 <- as(as.matrix(counts7), "dgCMatrix")
+matrix8 <- as(as.matrix(counts8), "dgCMatrix")
+
+matrix9 <- as(as.matrix(counts9), "dgCMatrix")
+matrix10 <- as(as.matrix(counts10), "dgCMatrix")
+matrix11 <- as(as.matrix(counts11), "dgCMatrix")
+matrix12 <- as(as.matrix(counts12), "dgCMatrix")
+
+matrix13 <- as(as.matrix(counts13), "dgCMatrix")
+matrix14 <- as(as.matrix(counts14), "dgCMatrix")
+matrix15 <- as(as.matrix(counts15), "dgCMatrix")
+matrix16 <- as(as.matrix(counts16), "dgCMatrix")
+
+dim(matrix1)
+dim(matrix2)
+dim(matrix3)
+dim(matrix4)
+
+dim(matrix5)
+dim(matrix6)
+dim(matrix7)
+dim(matrix8)
+
+dim(matrix9)
+dim(matrix10)
+dim(matrix11)
+dim(matrix12)
+
+dim(matrix13)
+dim(matrix14)
+dim(matrix15)
+dim(matrix16)
+
+###
+Total_expression <- Matrix::colSums(matrix1)
+Total_expression <- Matrix::rowSums(matrix1)
+genes_per_cell <- Matrix::colSums(matrix1>0)
+cells_per_gene <- Matrix::rowSums(matrix1>0)
+####
+counts_per_cell2 <- Matrix::colSums(matrix2)
+counts_per_gene2 <-Matrix::rowSums(matrix2)
+genes_per_cell2 <- Matrix::colSums(matrix2>0)
+cells_per_gene2 <- Matrix::rowSums(matrix2>0)
+
+###
+counts_per_cell3 <- Matrix::colSums(matrix3)
+counts_per_gene3 <- Matrix::rowSums(matrix3)
+genes_per_cell3 <- Matrix::colSums(matrix3>0) 
+cells_per_gene3 <- Matrix::rowSums(matrix3>0)
+
+###
+counts_per_cell4 <- Matrix::colSums(matrix4)
+counts_per_gene4 <- Matrix::rowSums(matrix4)
+genes_per_cell4 <- Matrix::colSums(matrix4>0)
+cells_per_gene4 <- Matrix::rowSums(matrix4>0)
+
+```
+
+## Preparing the individual Seurat objects
+```{r}
+
+#1 subset
+Untreated_SKMel30 <- CreateSeuratObject(counts = matrix1, )
+VlnPlot(Untreated_SKMel30, "nFeature_RNA")
+Untreated_SKMel30 <- NormalizeData(Untreated_SKMel30, normalization.method = "LogNormalize", scale.factor = 10000)
+Untreated_SKMel30 <- FindVariableFeatures(Untreated_SKMel30, selection.method = "vst", nfeatures = 2000)
+Untreated_SKMel30 <- ScaleData(Untreated_SKMel30)
+Untreated_SKMel30[["treat"]] <- "Untreated_SKMel30"
+
+#2 subset
+Treated_24h_SKMel30 <- CreateSeuratObject(counts = matrix2)
+VlnPlot(Treated_24h_SKMel30, "nFeature_RNA")
+Treated_24h_SKMel30 <- NormalizeData(Treated_24h_SKMel30, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_24h_SKMel30 <- FindVariableFeatures(Treated_24h_SKMel30, selection.method = "vst", nfeatures = 2000)
+Treated_24h_SKMel30 <- ScaleData(Treated_24h_SKMel30)
+Treated_24h_SKMel30 [["treat"]] <- "Treated 24h_SKMel30"
+
+#3 subset
+Treated_4days_SKMel30 <- CreateSeuratObject(counts = matrix3)
+VlnPlot(Treated_4days_SKMel30, "nFeature_RNA")
+Treated_4days_SKMel30 <- NormalizeData(Treated_4days_SKMel30, normalization.method = "LogNormalize",scale.factor = 10000)
+Treated_4days_SKMel30 <- FindVariableFeatures(Treated_4days_SKMel30, selection.method = "vst", nfeatures = 2000)
+Treated_4days_SKMel30 <- ScaleData(Treated_4days_SKMel30)
+Treated_4days_SKMel30 [["treat"]] <- "Treated 4days_SKMel30"
+
+#4 subset
+Treated_long_SKMel30 <- CreateSeuratObject(counts = matrix4)
+VlnPlot(Treated_long_SKMel30, "nFeature_RNA")
+Treated_long_SKMel30 <- NormalizeData(Treated_long_SKMel30, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_long_SKMel30 <- FindVariableFeatures(Treated_long_SKMel30, selection.method = "vst", nfeatures = 2000)
+Treated_long_SKMel30 <- ScaleData(Treated_long_SKMel30)
+Treated_long_SKMel30[["treat"]] <- "Treated long_SKMel30"
+
+#5 subset
+Untreated_MelJuso <- CreateSeuratObject(counts = matrix5)
+VlnPlot(Untreated_MelJuso, "nFeature_RNA")
+Untreated_MelJuso <- NormalizeData(Untreated_MelJuso, normalization.method = "LogNormalize", scale.factor = 10000)
+Untreated_MelJuso <- FindVariableFeatures(Untreated_MelJuso, selection.method = "vst", nfeatures = 2000)
+Untreated_MelJuso <- ScaleData(Untreated_MelJuso)
+Untreated_MelJuso[["treat"]] <- "Untreated_MelJuso"
+
+#6 subset
+Treated_24h_MelJuso <- CreateSeuratObject(counts = matrix6)
+VlnPlot(Treated_24h_MelJuso, "nFeature_RNA")
+Treated_24h_MelJuso <- NormalizeData(Treated_24h_MelJuso, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_24h_MelJuso <- FindVariableFeatures(Treated_24h_MelJuso, selection.method = "vst", nfeatures = 2000)
+Treated_24h_MelJuso <- ScaleData(Treated_24h_MelJuso)
+Treated_24h_MelJuso [["treat"]] <- "Treated 24h_MelJuso"
+
+#7 subset
+Treated_4days_MelJuso <- CreateSeuratObject(counts = matrix7)
+VlnPlot(Treated_4days_MelJuso, "nFeature_RNA")
+Treated_4days_MelJuso <- NormalizeData(Treated_4days_MelJuso, normalization.method = "LogNormalize",scale.factor = 10000)
+Treated_4days_MelJuso <- FindVariableFeatures(Treated_4days_MelJuso, selection.method = "vst", nfeatures = 2000)
+Treated_4days_MelJuso <- ScaleData(Treated_4days_MelJuso)
+Treated_4days_MelJuso [["treat"]] <- "Treated 4days_MelJuso"
+
+#8 subset
+Treated_long_MelJuso <- CreateSeuratObject(counts = matrix8)
+VlnPlot(Treated_long_MelJuso, "nFeature_RNA")
+Treated_long_MelJuso <- NormalizeData(Treated_long_MelJuso, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_long_MelJuso <- FindVariableFeatures(Treated_long_MelJuso, selection.method = "vst", nfeatures = 2000)
+Treated_long_MelJuso <- ScaleData(Treated_long_MelJuso)
+Treated_long_MelJuso[["treat"]] <- "Treated long_MelJuso"
+
+#9 subset
+Untreated_IPC298 <- CreateSeuratObject(counts = matrix9)
+VlnPlot(Untreated_IPC298, "nFeature_RNA")
+Untreated_IPC298 <- NormalizeData(Untreated_IPC298, normalization.method = "LogNormalize", scale.factor = 10000)
+Untreated_IPC298 <- FindVariableFeatures(Untreated_IPC298, selection.method = "vst", nfeatures = 2000)
+Untreated_IPC298 <- ScaleData(Untreated_IPC298)
+Untreated_IPC298[["treat"]] <- "Untreated_IPC298"
+
+#10 subset
+Treated_24h_IPC298 <- CreateSeuratObject(counts = matrix10)
+VlnPlot(Treated_24h_IPC298, "nFeature_RNA")
+Treated_24h_IPC298 <- NormalizeData(Treated_24h_IPC298, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_24h_IPC298 <- FindVariableFeatures(Treated_24h_IPC298, selection.method = "vst", nfeatures = 2000)
+Treated_24h_IPC298 <- ScaleData(Treated_24h_IPC298)
+Treated_24h_IPC298 [["treat"]] <- "Treated 24h_IPC298"
+
+#11 subset
+Treated_4days_IPC298 <- CreateSeuratObject(counts = matrix11)
+VlnPlot(Treated_4days_IPC298, "nFeature_RNA")
+Treated_4days_IPC298 <- NormalizeData(Treated_4days_IPC298, normalization.method = "LogNormalize",scale.factor = 10000)
+Treated_4days_IPC298 <- FindVariableFeatures(Treated_4days_IPC298, selection.method = "vst", nfeatures = 2000)
+Treated_4days_IPC298 <- ScaleData(Treated_4days_IPC298)
+Treated_4days_IPC298 [["treat"]] <- "Treated 4days_IPC298"
+
+#12 subset
+Treated_long_IPC298 <- CreateSeuratObject(counts = matrix12)
+VlnPlot(Treated_long_IPC298, "nFeature_RNA")
+Treated_long_IPC298 <- NormalizeData(Treated_long_IPC298, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_long_IPC298 <- FindVariableFeatures(Treated_long_IPC298, selection.method = "vst", nfeatures = 2000)
+Treated_long_IPC298 <- ScaleData(Treated_long_IPC298)
+Treated_long_IPC298[["treat"]] <- "Treated long_IPC298"
+
+#13 subset nGene
+Untreated_M20 <- CreateSeuratObject(counts = matrix13)
+VlnPlot(Untreated_M20, "nFeature_RNA")
+Untreated_M20 <- NormalizeData(Untreated_M20, normalization.method = "LogNormalize", scale.factor = 10000)
+Untreated_M20 <- FindVariableFeatures(Untreated_M20, selection.method = "vst", nfeatures = 2000)
+Untreated_M20 <- ScaleData(Untreated_M20)
+Untreated_M20[["treat"]] <- "Untreated_M20"
+
+#14 subset
+Treated_24h_M20 <- CreateSeuratObject(counts = matrix14)
+VlnPlot(Treated_24h_M20, "nFeature_RNA")
+Treated_24h_M20 <- NormalizeData(Treated_24h_M20, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_24h_M20 <- FindVariableFeatures(Treated_24h_M20, selection.method = "vst", nfeatures = 2000)
+Treated_24h_M20 <- ScaleData(Treated_24h_M20)
+Treated_24h_M20 [["treat"]] <- "Treated 24h_M20"
+
+#15 subset
+Treated_4days_M20 <- CreateSeuratObject(counts = matrix15)
+VlnPlot(Treated_4days_M20, "nFeature_RNA")
+Treated_4days_M20 <- NormalizeData(Treated_4days_M20, normalization.method = "LogNormalize",scale.factor = 10000)
+Treated_4days_M20 <- FindVariableFeatures(Treated_4days_M20, selection.method = "vst", nfeatures = 2000)
+Treated_4days_M20 <- ScaleData(Treated_4days_M20)
+Treated_4days_M20 [["treat"]] <- "Treated 4days_M20"
+
+#16 subset
+Treated_long_M20 <- CreateSeuratObject(counts = matrix16)
+VlnPlot(Treated_long_M20, "nFeature_RNA")
+Treated_long_M20 <- NormalizeData(Treated_long_M20, normalization.method = "LogNormalize", scale.factor = 10000)
+Treated_long_M20 <- FindVariableFeatures(Treated_long_M20, selection.method = "vst", nfeatures = 2000)
+Treated_long_M20 <- ScaleData(Treated_long_M20)
+Treated_long_M20[["treat"]] <- "Treated long_M20"
+
+##
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Untreated_SKMel30@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Untreated_SKMel30@assays$RNA@data[mito.genes, ])/Matrix::colSums(Untreated_SKMel30@assays$RNA@data)
+Untreated_SKMel30 <- AddMetaData(object = Untreated_SKMel30, metadata = percent.mito, col.name = "percent.mito")
+# Load the the list of house keeping genes
+hkgenes <- read.table(paste0("./tirosh_house_keeping.txt"), skip = 2)
+hkgenes <- as.vector(hkgenes$V1)
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Untreated_SKMel30@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Untreated_SKMel30@assays$RNA@data[hkgenes.found, ] > 0)
+Untreated_SKMel30 <- AddMetaData(object = Untreated_SKMel30, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_24h_SKMel30@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_24h_SKMel30@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_24h_SKMel30@assays$RNA@data)
+Treated_24h_SKMel30 <- AddMetaData(object = Treated_24h_SKMel30, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_24h_SKMel30@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_24h_SKMel30@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_24h_SKMel30 <- AddMetaData(object = Treated_24h_SKMel30, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_4days_SKMel30@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_4days_SKMel30@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_4days_SKMel30@assays$RNA@data)
+Treated_4days_SKMel30 <- AddMetaData(object = Treated_4days_SKMel30, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_4days_SKMel30@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_4days_SKMel30@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_4days_SKMel30 <- AddMetaData(object = Treated_4days_SKMel30, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_long_SKMel30@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_long_SKMel30@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_long_SKMel30@assays$RNA@data)
+Treated_long_SKMel30 <- AddMetaData(object = Treated_long_SKMel30, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_long_SKMel30@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_long_SKMel30@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_long_SKMel30 <- AddMetaData(object = Treated_long_SKMel30, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Untreated_MelJuso@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Untreated_MelJuso@assays$RNA@data[mito.genes, ])/Matrix::colSums(Untreated_MelJuso@assays$RNA@data)
+Untreated_MelJuso <- AddMetaData(object = Untreated_MelJuso, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Untreated_MelJuso@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Untreated_MelJuso@assays$RNA@data[hkgenes.found, ] > 0)
+Untreated_MelJuso <- AddMetaData(object = Untreated_MelJuso, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_24h_MelJuso@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_24h_MelJuso@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_24h_MelJuso@assays$RNA@data)
+Treated_24h_MelJuso <- AddMetaData(object = Treated_24h_MelJuso, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_24h_MelJuso@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_24h_MelJuso@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_24h_MelJuso <- AddMetaData(object = Treated_24h_MelJuso, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_4days_MelJuso@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_4days_MelJuso@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_4days_MelJuso@assays$RNA@data)
+Treated_4days_MelJuso <- AddMetaData(object = Treated_4days_MelJuso, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_4days_MelJuso@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_4days_MelJuso@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_4days_MelJuso <- AddMetaData(object = Treated_4days_MelJuso, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_long_MelJuso@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_long_MelJuso@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_long_MelJuso@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_long_MelJuso <- AddMetaData(object = Treated_long_MelJuso, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_long_MelJuso@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_long_MelJuso@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_long_MelJuso <- AddMetaData(object = Treated_long_MelJuso, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+#######################################################################################################
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Untreated_IPC298@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Untreated_IPC298@assays$RNA@data[mito.genes, ])/Matrix::colSums(Untreated_IPC298@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Untreated_IPC298 <- AddMetaData(object = Untreated_IPC298, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Untreated_IPC298@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Untreated_IPC298@assays$RNA@data[hkgenes.found, ] > 0)
+Untreated_IPC298 <- AddMetaData(object = Untreated_IPC298, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_24h_IPC298@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_24h_IPC298@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_24h_IPC298@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_24h_IPC298 <- AddMetaData(object = Treated_24h_IPC298, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_24h_IPC298@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_24h_IPC298@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_24h_IPC298 <- AddMetaData(object = Treated_24h_IPC298, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_4days_IPC298@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_4days_IPC298@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_4days_IPC298@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_4days_IPC298 <- AddMetaData(object = Treated_4days_IPC298, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_4days_IPC298@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_4days_IPC298@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_4days_IPC298 <- AddMetaData(object = Treated_4days_IPC298, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_long_IPC298@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_long_IPC298@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_long_IPC298@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_long_IPC298 <- AddMetaData(object = Treated_long_IPC298, metadata = percent.mito, col.name = "percent.mito")
+VlnPlot(object = Treated_long_IPC298, features = c("nFeature_RNA", "nCount_RNA", "percent.mito"))
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_long_IPC298@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_long_IPC298@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_long_IPC298 <- AddMetaData(object = Treated_long_IPC298, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+#######################################################################################################
+# vcalculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Untreated_M20@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Untreated_M20@assays$RNA@data[mito.genes, ])/Matrix::colSums(Untreated_M20@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Untreated_M20 <- AddMetaData(object = Untreated_M20, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Untreated_M20@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Untreated_M20@assays$RNA@data[hkgenes.found, ] > 0)
+Untreated_M20 <- AddMetaData(object = Untreated_M20, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# vcalculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_24h_M20@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_24h_M20@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_24h_M20@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_24h_M20 <- AddMetaData(object = Treated_24h_M20, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_24h_M20@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_24h_M20@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_24h_M20 <- AddMetaData(object = Treated_24h_M20, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_4days_M20@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_4days_M20@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_4days_M20@assays$RNA@data)
+Treated_4days_M20 <- AddMetaData(object = Treated_4days_M20, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_4days_M20@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_4days_M20@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_4days_M20 <- AddMetaData(object = Treated_4days_M20, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+# calculate percent pf mitochondria genes
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = Treated_long_M20@assays$RNA@data), value = TRUE)
+percent.mito <- Matrix::colSums(Treated_long_M20@assays$RNA@data[mito.genes, ])/Matrix::colSums(Treated_long_M20@assays$RNA@data)
+#### seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+Treated_long_M20 <- AddMetaData(object = Treated_long_M20, metadata = percent.mito, col.name = "percent.mito")
+# remove hkgenes that were not found
+hkgenes.found <- which(toupper(rownames(Treated_long_M20@assays$RNA@data)) %in% hkgenes)
+# Add_number_of_house_keeping_genes
+n.expressed.hkgenes <- Matrix::colSums(Treated_long_M20@assays$RNA@data[hkgenes.found, ] > 0)
+Treated_long_M20 <- AddMetaData(object = Treated_long_M20, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
+
+#Calculate ribosomal proportion
+rb.genes <- rownames(Untreated_SKMel30)[grep("^RP[SL]",rownames(Untreated_SKMel30))]
+percent.ribo <- colSums(Untreated_SKMel30@assays$RNA@data[rb.genes,])/Matrix::colSums(Untreated_SKMel30@assays$RNA@data)*100
+Untreated_SKMel30 <- AddMetaData(Untreated_SKMel30, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_24h_SKMel30)[grep("^RP[SL]",rownames(Treated_24h_SKMel30))]
+percent.ribo <- colSums(Treated_24h_SKMel30@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_24h_SKMel30@assays$RNA@data)*100
+Treated_24h_SKMel30 <- AddMetaData(Treated_24h_SKMel30, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_4days_SKMel30)[grep("^RP[SL]",rownames(Treated_4days_SKMel30))]
+percent.ribo <- colSums(Treated_4days_SKMel30@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_4days_SKMel30@assays$RNA@data)*100
+Treated_4days_SKMel30 <- AddMetaData(Treated_4days_SKMel30, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_long_SKMel30)[grep("^RP[SL]",rownames(Treated_long_SKMel30))]
+percent.ribo <- colSums(Treated_long_SKMel30@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_long_SKMel30@assays$RNA@data)*100
+Treated_long_SKMel30 <- AddMetaData(Treated_long_SKMel30, percent.ribo, col.name = "percent.ribo")
+
+rb.genes <- rownames(Untreated_MelJuso)[grep("^RP[SL]",rownames(Untreated_MelJuso))]
+percent.ribo <- colSums(Untreated_MelJuso@assays$RNA@data[rb.genes,])/Matrix::colSums(Untreated_MelJuso@assays$RNA@data)*100
+Untreated_MelJuso <- AddMetaData(Untreated_MelJuso, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_24h_MelJuso)[grep("^RP[SL]",rownames(Treated_24h_MelJuso))]
+percent.ribo <- colSums(Treated_24h_MelJuso@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_24h_MelJuso@assays$RNA@data)*100
+Treated_24h_MelJuso <- AddMetaData(Treated_24h_MelJuso, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_4days_MelJuso)[grep("^RP[SL]",rownames(Treated_4days_MelJuso))]
+percent.ribo <- colSums(Treated_4days_MelJuso@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_4days_MelJuso@assays$RNA@data)*100
+Treated_4days_MelJuso <- AddMetaData(Treated_4days_MelJuso, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_long_MelJuso)[grep("^RP[SL]",rownames(Treated_long_MelJuso))]
+percent.ribo <- colSums(Treated_long_MelJuso@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_long_MelJuso@assays$RNA@data)*100
+Treated_long_MelJuso <- AddMetaData(Treated_long_MelJuso, percent.ribo, col.name = "percent.ribo")
+
+rb.genes <- rownames(Untreated_IPC298)[grep("^RP[SL]",rownames(Untreated_IPC298))]
+percent.ribo <- colSums(Untreated_IPC298@assays$RNA@data[rb.genes,])/Matrix::colSums(Untreated_IPC298@assays$RNA@data)*100
+Untreated_IPC298 <- AddMetaData(Untreated_IPC298, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_24h_IPC298)[grep("^RP[SL]",rownames(Treated_24h_IPC298))]
+percent.ribo <- colSums(Treated_24h_IPC298@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_24h_IPC298@assays$RNA@data)*100
+Treated_24h_IPC298 <- AddMetaData(Treated_24h_IPC298, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_4days_IPC298)[grep("^RP[SL]",rownames(Treated_4days_IPC298))]
+percent.ribo <- colSums(Treated_4days_IPC298@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_4days_IPC298@assays$RNA@data)*100
+Treated_4days_IPC298 <- AddMetaData(Treated_4days_IPC298, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_long_IPC298)[grep("^RP[SL]",rownames(Treated_long_IPC298))]
+percent.ribo <- colSums(Treated_long_IPC298@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_long_IPC298@assays$RNA@data)*100
+Treated_long_IPC298 <- AddMetaData(Treated_long_IPC298, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Untreated_M20)[grep("^RP[SL]",rownames(Untreated_M20))]
+percent.ribo <- colSums(Untreated_M20@assays$RNA@data[rb.genes,])/Matrix::colSums(Untreated_M20@assays$RNA@data)*100
+Untreated_M20 <- AddMetaData(Untreated_M20, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_24h_M20)[grep("^RP[SL]",rownames(Treated_24h_M20))]
+percent.ribo <- colSums(Treated_24h_M20@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_24h_M20@assays$RNA@data)*100
+Treated_24h_M20 <- AddMetaData(Treated_24h_M20, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_4days_M20)[grep("^RP[SL]",rownames(Treated_4days_M20))]
+percent.ribo <- colSums(Treated_4days_M20@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_4days_M20@assays$RNA@data)*100
+Treated_4days_M20 <- AddMetaData(Treated_4days_M20, percent.ribo, col.name = "percent.ribo")
+rb.genes <- rownames(Treated_long_M20)[grep("^RP[SL]",rownames(Treated_long_M20))]
+percent.ribo <- colSums(Treated_long_M20@assays$RNA@data[rb.genes,])/Matrix::colSums(Treated_long_M20@assays$RNA@data)*100
+Treated_long_M20 <- AddMetaData(Treated_long_M20, percent.ribo, col.name = "percent.ribo")
+
+#
+##all
+add.cell.ids <- c("Untreated_SKMel30","Treated 24h_SKMel30","Treated 4days_SKMel30", "Treated long_SKMel30",  "Untreated_IPC298","Treated 24h_IPC298","Treated 4days_IPC298","Treated long_IPC298","Untreated_MelJuso","Treated 24h_MelJuso","Treated 4days_MelJuso", "Treated long_MelJuso", "Untreated_M20","Treated 24h_M20","Treated 4days_M20", "Treated long_M20")
+##1d
+#FACs
+add.cell.ids <- c("Untreated_SKMel30", "Untreated_IPC298", "Treated 24h_SKMel30", "Treated 24h_IPC298")
+#SACs
+add.cell.ids <- c("Untreated_MelJuso","Untreated_M20", "Treated 24h_MelJuso","Treated 24h_M20")
+##4d
+#FACs
+add.cell.ids <- c("Untreated_SKMel30", "Untreated_IPC298", "Treated 4days_SKMel30", "Treated 4days_IPC298")
+#SACs
+add.cell.ids <- c("Untreated_MelJuso","Untreated_M20","Treated 4days_MelJuso","Treated 4days_M20")
+##33days
+#FACs
+add.cell.ids <- c("Untreated_SKMel30","Untreated_IPC298", "Treated long_SKMel30","Treated long_IPC298")
+#SACs
+add.cell.ids <- c("Untreated_MelJuso","Untreated_M20","Treated long_MelJuso","Treated long_M20")
+
+##all
+gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Treated_4days_SKMel30, Treated_long_SKMel30, Untreated_IPC298,Treated_24h_IPC298,Treated_4days_IPC298,Treated_long_IPC298,Untreated_MelJuso,Treated_24h_MelJuso,Treated_4days_MelJuso,Treated_long_MelJuso, Untreated_M20,Treated_24h_M20,Treated_4days_M20, Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat" 
+##1d
+#FACs
+gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Untreated_MelJuso,Treated_24h_MelJuso,Untreated_IPC298,Treated_24h_IPC298, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat"
+#SACs
+gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_24h_MelJuso, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat"
+##4d
+#FACs
+gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_4days_SKMel30,Untreated_IPC298,Treated_4days_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat" 
+#SACs
+gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_4days_MelJuso, Untreated_M20,Treated_4days_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat" 
+##33d
+#FACs
+gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_long_SKMel30,Untreated_IPC298,Treated_long_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat"  
+#SACs
+gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_long_MelJuso,Untreated_M20,Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(gcdata) <- "treat" 
+
+##all
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Treated 24h_SKMel30","Treated 4days_SKMel30", "Treated long_SKMel30",  "Untreated_IPC298","Treated 24h_IPC298","Treated 4days_IPC298","Treated long_IPC298","Untreated_MelJuso","Treated 24h_MelJuso","Treated 4days_MelJuso", "Treated long_MelJuso", "Untreated_M20","Treated 24h_M20","Treated 4days_M20", "Treated long_M20"))
+##1d
+#FACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30", "Untreated_IPC298","Treated 24h_SKMel30","Treated 24h_IPC298"))
+#SACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 24h_MelJuso","Treated 24h_M20"))
+##4d
+#FACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated 4days_SKMel30", "Treated 4days_IPC298"))
+#SACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 4days_MelJuso","Treated 4days_M20"))
+##33d
+#FACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated long_SKMel30", "Treated long_IPC298"))
+#SACs
+gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated long_MelJuso","Treated long_M20"))
+
+newdat <- tibble(treat=gcdata$treat) %>%
+separate(treat, into = c("treatment", "cell_line"), sep="_", remove=FALSE)
+gcdata <- AddMetaData(gcdata, metadata=newdat$treatment, col.name="treatment")
+gcdata <- AddMetaData(gcdata, metadata=newdat$cell_line, col.name="cell_line")
+gcdata <- subset(gcdata, subset = nFeature_RNA >300 & nFeature_RNA < 8000 & percent.mito < 0.15 & percent.ribo <25 & n.exp.hkgenes >15)
+```
+
+# Data integration - Standard workflow (https://satijalab.org/seurat/v3.0/integration.html)
+```{r}
+    gcdata.list <- SplitObject(gcdata, split.by = "cell_line")
+
+for (i in 1:length(gcdata.list)) {
+    gcdata.list[[i]] <- NormalizeData(gcdata.list[[i]], verbose = FALSE)
+    gcdata.list[[i]] <- FindVariableFeatures(gcdata.list[[i]], selection.method = "vst", 
+        nfeatures = 2000, verbose = FALSE)}
+
+gcdata.anchors <- FindIntegrationAnchors(object.list = gcdata.list, dims = 1:30)
+gcdata.integrated <- IntegrateData(anchorset = gcdata.anchors, dims = 1:30)
+library(ggplot2) 
+library(cowplot)
+# switch to integrated assay. The variable features of this assay are automatically
+# set during IntegrateData
+DefaultAssay(gcdata.integrated) <- "integrated"
+
+# Run the standard workflow for visualization and clustering
+gcdata.integrated <- ScaleData(gcdata.integrated, verbose = FALSE)
+gcdata.integrated <- RunPCA(gcdata.integrated, npcs = 40, verbose = FALSE)
+
+gcdata.integrated <- FindNeighbors(gcdata.integrated, reduction = "pca", dims = 1:40, k.param = 20)
+gcdata.integrated <- FindClusters(gcdata.integrated, resolution = 0.4, algorithm = 1, random.seed = 100)
+
+gcdata.integrated <- RunUMAP(gcdata.integrated, reduction = "pca", dims = 1:40)
+gcdata.integrated <- RunTSNE(gcdata.integrated, reduction = "pca", dims = 1:40)
+
+p1 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "treatment")
+p <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "cell_line", label = TRUE) 
+p3 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "treat", label = TRUE) 
+p4 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "seurat_clusters", label = TRUE) 
+plot_grid(p2, p1, p3,p4, ncols = 4)
+
+
+#Cell cycle scoring:
+s.genes <- Seurat::cc.genes$s.genes
+g1.genes <- Seurat::cc.genes$g1.genes
+g2m.genes <- Seurat::cc.genes$g2m.genes
+gcdata.integrated <- CellCycleScoring(object = gcdata.integrated, g1.features = g1.genes, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+p<-DimPlot(gcdata.integrated, reduction = "umap", group.by = "Phase",cols = c( "#0cad00", "#6a089c","#43dae8"))+theme(legend.text = element_text(size = 20),legend.key.size = unit(0.7, "cm"))
+p+labs(title="", color='Cell cycle phase')+theme(legend.title = element_text(colour="darkblue"))+guides(colour = guide_legend(override.aes = list(size=4)))
+
+```
+
+# Regressing out cell cycle genes
+```{r}
+gcdata.integrated$CC.Difference <- gcdata.integrated$S.Score - gcdata.integrated$G2M.Score
+gcdata.integrated <- ScaleData(gcdata.integrated, vars.to.regress = "CC.Difference", features = rownames(gcdata.integrated))
+gcdata.integrated <- RunPCA(gcdata.integrated, features = VariableFeatures(gcdata.integrated), nfeatures.print = 10)
+gcdata.integrated <- RunPCA(gcdata.integrated, features = c(s.genes, g2m.genes))
+DimPlot()
+
+```
+
+
+# Identification of highly variable features 
+```{r}
+gcdata.integrated$treat<-fct_relevel(gcdata.integrated$treat,"Untreated_SKMel30","Untreated_IPC298","Untreated_MelJuso","Untreated_M20","Treated 24h_SKMel30","Treated 24h_IPC298","Treated 24h_MelJuso","Treated 24h_M20","Treated 4days_SKMel30","Treated 4days_IPC298", "Treated 4days_MelJuso","Treated 4days_M20", "Treated long_SKMel30",  "Treated long_IPC298", "Treated long_MelJuso", "Treated long_M20")
+seuratMarkers<- FindAllMarkers(gcdata.integrated, min.pct=0.2)
+top10 <- seuratMarkers %>% group_by(cluster) %>% top_n(3, avg_log2FC)
+
+DoHeatmap(object = gcdata.integrated, features = top10$gene, group.colors = col, label = TRUE, size = 8) + scale_fill_gradientn(colors = c("#77e6ed", "grey88", "#ff0000"))+ theme( axis.text.y = element_text(face = "bold", color = "#454141",  size = 15))
+#or
+occurrence <- top10[!duplicated(top10$gene),]
+DotPlot(gcdata.integrated, features = as.character(occurrence$gene), group.by = "treat") + RotatedAxis()+ xlab("") + ylab("Days of MEK1/2i+CDK4/6i treatment") + theme(axis.ticks.y = element_blank())+ scale_y_discrete(labels=c("0d","1d","4d", "33d"))+ theme(axis.text.x = element_text(face = "bold", color = "#993333", size = 12, angle = 45), axis.text.y = element_text(face = "bold", color = "blue",  size = 12, angle = 90))
+
+```
+
+#Cell proportion plot
+```{r}
+get_group_proportions <- function (gcdata.integrated, group.by = "active.ident") {
+  if (group.by == "active.ident") {
+    gcdata.integrated[["active.ident"]] <- gcdata.integrated@active.ident
+  }
+  total_populations <- gcdata.integrated@meta.data %>% group_by(treat) %>% summarize (total.pop = n())
+  count_populations <- gcdata.integrated@meta.data %>% group_by_at(vars(group.by, "treat")) %>% summarize (n = n())
+  count_populations <- left_join(count_populations, total_populations, by = "treat")
+  count_populations <- count_populations %>% mutate (proportion = n/total.pop)
+  count_populations
+}
+
+plot_group_proportions <- function (gcdata.integrated, graph.type = "dodge") {
+  count_populations <- get_group_proportions(seuratobj)
+  if (graph.type == "dodge"){
+  ggplot(count_populations, aes (x = treat, y = proportion))+
+    geom_bar (aes(fill = active.ident), stat = "identity", position = "dodge",width = 0.97)+
+      theme(axis.text.x = element_text(angle=45, hjust = 1))
+  } else if (graph.type == "stacked") {
+  ggplot(count_populations, aes (x = active.ident, y = proportion))+
+    geom_bar (aes(fill = treat), stat = "identity", position = "fill",width = 0.97)
+  } else  print("invalid graph type")}
+
+a<-plot_group_proportions(seuratobj, graph.type = "stacked")+ 
+  xlab("Unsupervised clusters") +
+     ylab("Proportion of cells")
+col<-c("grey66","grey70","grey80", "grey85","dodgerblue4","dodgerblue3","#60aef7", "#88c1f7","darkorange4","darkorange3","darkorange2","darkorange1","springgreen4","springgreen3","springgreen2","springgreen1")
+a+scale_fill_manual(values=col,labels = c("0d SKMel30", "0d IPC298", "0d MelJuso", "0d M20","1d SKMel30", "1d IPC298", "1d MelJuso", "1d M20","4d SKMel30", "4d IPC298", "4d MelJuso", "4d M20","33d SKMel30", "33d IPC298", "33d MelJuso", "33d M20"))+theme(panel.background = element_blank(),axis.line = element_line(colour = "grey"),axis.title.y = element_text(size = 25),axis.text.y = element_text(size = 22,face="bold"), axis.title.x = element_text(size = 25),axis.text.x = element_text(size = 30,face="bold", angle=90), legend.text = element_text(size = 20),legend.title = element_text(size = 22,face="bold"))+ guides(fill=guide_legend(title="Treatment"))
+
+```
+
+# Markers
+```{r}
+
+genesig <- read.table(paste0("./Gene_signature.txt"), skip = 2)
+genesig <- as.vector(genesig$V1)
+genesig.found <- which(toupper(rownames(gcdata.integrated@assays$RNA@data)) %in% genesig)
+n.expressed.genesig <- Matrix::colSums(gcdata.integrated@assays$RNA@data[genesig.found, ])
+gcdata.integrated <- AddMetaData(object = gcdata.integrated, metadata = n.expressed.genesig, col.name = "Pigmentation")
+FeaturePlot(gcdata.integrated, features = c("Gene_siganture", label=T))
+```
