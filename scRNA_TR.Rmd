@@ -1,5 +1,5 @@
 ---
-title: "NRAmut melanoma"
+title: "NRAS-mutant melanoma"
 author: "Tijana Randic"
 output: html_document
 ---
@@ -587,86 +587,86 @@ add.cell.ids <- c("Untreated_SKMel30","Untreated_IPC298", "Treated long_SKMel30"
 add.cell.ids <- c("Untreated_MelJuso","Untreated_M20","Treated long_MelJuso","Treated long_M20")
 
 ##all
-gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Treated_4days_SKMel30, Treated_long_SKMel30, Untreated_IPC298,Treated_24h_IPC298,Treated_4days_IPC298,Treated_long_IPC298,Untreated_MelJuso,Treated_24h_MelJuso,Treated_4days_MelJuso,Treated_long_MelJuso, Untreated_M20,Treated_24h_M20,Treated_4days_M20, Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat" 
+mcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Treated_4days_SKMel30, Treated_long_SKMel30, Untreated_IPC298,Treated_24h_IPC298,Treated_4days_IPC298,Treated_long_IPC298,Untreated_MelJuso,Treated_24h_MelJuso,Treated_4days_MelJuso,Treated_long_MelJuso, Untreated_M20,Treated_24h_M20,Treated_4days_M20, Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat" 
 ##1d
 #FACs
-gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Untreated_MelJuso,Treated_24h_MelJuso,Untreated_IPC298,Treated_24h_IPC298, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat"
+mcdata <- merge(x = Untreated_SKMel30, y = list(Treated_24h_SKMel30,Untreated_MelJuso,Treated_24h_MelJuso,Untreated_IPC298,Treated_24h_IPC298, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat"
 #SACs
-gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_24h_MelJuso, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat"
+mcdata <- merge(x = Untreated_MelJuso, y = list(Treated_24h_MelJuso, Untreated_M20,Treated_24h_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat"
 ##4d
 #FACs
-gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_4days_SKMel30,Untreated_IPC298,Treated_4days_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat" 
+mcdata <- merge(x = Untreated_SKMel30, y = list(Treated_4days_SKMel30,Untreated_IPC298,Treated_4days_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat" 
 #SACs
-gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_4days_MelJuso, Untreated_M20,Treated_4days_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat" 
+mcdata <- merge(x = Untreated_MelJuso, y = list(Treated_4days_MelJuso, Untreated_M20,Treated_4days_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat" 
 ##33d
 #FACs
-gcdata <- merge(x = Untreated_SKMel30, y = list(Treated_long_SKMel30,Untreated_IPC298,Treated_long_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat"  
+mcdata <- merge(x = Untreated_SKMel30, y = list(Treated_long_SKMel30,Untreated_IPC298,Treated_long_IPC298), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat"  
 #SACs
-gcdata <- merge(x = Untreated_MelJuso, y = list(Treated_long_MelJuso,Untreated_M20,Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
-Idents(gcdata) <- "treat" 
+mcdata <- merge(x = Untreated_MelJuso, y = list(Treated_long_MelJuso,Untreated_M20,Treated_long_M20), add.cell.ids = add.cell.ids, merge.data = FALSE)
+Idents(mcdata) <- "treat" 
 
 ##all
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Treated 24h_SKMel30","Treated 4days_SKMel30", "Treated long_SKMel30",  "Untreated_IPC298","Treated 24h_IPC298","Treated 4days_IPC298","Treated long_IPC298","Untreated_MelJuso","Treated 24h_MelJuso","Treated 4days_MelJuso", "Treated long_MelJuso", "Untreated_M20","Treated 24h_M20","Treated 4days_M20", "Treated long_M20"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_SKMel30","Treated 24h_SKMel30","Treated 4days_SKMel30", "Treated long_SKMel30",  "Untreated_IPC298","Treated 24h_IPC298","Treated 4days_IPC298","Treated long_IPC298","Untreated_MelJuso","Treated 24h_MelJuso","Treated 4days_MelJuso", "Treated long_MelJuso", "Untreated_M20","Treated 24h_M20","Treated 4days_M20", "Treated long_M20"))
 ##1d
 #FACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30", "Untreated_IPC298","Treated 24h_SKMel30","Treated 24h_IPC298"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_SKMel30", "Untreated_IPC298","Treated 24h_SKMel30","Treated 24h_IPC298"))
 #SACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 24h_MelJuso","Treated 24h_M20"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 24h_MelJuso","Treated 24h_M20"))
 ##4d
 #FACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated 4days_SKMel30", "Treated 4days_IPC298"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated 4days_SKMel30", "Treated 4days_IPC298"))
 #SACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 4days_MelJuso","Treated 4days_M20"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated 4days_MelJuso","Treated 4days_M20"))
 ##33d
 #FACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated long_SKMel30", "Treated long_IPC298"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_SKMel30","Untreated_IPC298", "Treated long_SKMel30", "Treated long_IPC298"))
 #SACs
-gcdata$treat <- factor(x = gcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated long_MelJuso","Treated long_M20"))
+mcdata$treat <- factor(x = mcdata$treat, levels = c("Untreated_MelJuso","Untreated_M20","Treated long_MelJuso","Treated long_M20"))
 
-newdat <- tibble(treat=gcdata$treat) %>%
+newdat <- tibble(treat=mcdata$treat) %>%
 separate(treat, into = c("treatment", "cell_line"), sep="_", remove=FALSE)
-gcdata <- AddMetaData(gcdata, metadata=newdat$treatment, col.name="treatment")
-gcdata <- AddMetaData(gcdata, metadata=newdat$cell_line, col.name="cell_line")
-gcdata <- subset(gcdata, subset = nFeature_RNA >300 & nFeature_RNA < 8000 & percent.mito < 0.15 & percent.ribo <25 & n.exp.hkgenes >15)
+mcdata <- AddMetaData(mcdata, metadata=newdat$treatment, col.name="treatment")
+mcdata <- AddMetaData(mcdata, metadata=newdat$cell_line, col.name="cell_line")
+mcdata <- subset(mcdata, subset = nFeature_RNA >300 & nFeature_RNA < 8000 & percent.mito < 0.15 & percent.ribo <25 & n.exp.hkgenes >15)
 ```
 
 # Data integration - Standard workflow (https://satijalab.org/seurat/v3.0/integration.html)
 ```{r}
-    gcdata.list <- SplitObject(gcdata, split.by = "cell_line")
+    mcdata.list <- SplitObject(mcdata, split.by = "cell_line")
 
-for (i in 1:length(gcdata.list)) {
-    gcdata.list[[i]] <- NormalizeData(gcdata.list[[i]], verbose = FALSE)
-    gcdata.list[[i]] <- FindVariableFeatures(gcdata.list[[i]], selection.method = "vst", 
+for (i in 1:length(mcdata.list)) {
+    mcdata.list[[i]] <- NormalizeData(mcdata.list[[i]], verbose = FALSE)
+    mcdata.list[[i]] <- FindVariableFeatures(mcdata.list[[i]], selection.method = "vst", 
         nfeatures = 2000, verbose = FALSE)}
 
-gcdata.anchors <- FindIntegrationAnchors(object.list = gcdata.list, dims = 1:30)
-gcdata.integrated <- IntegrateData(anchorset = gcdata.anchors, dims = 1:30)
+mcdata.anchors <- FindIntegrationAnchors(object.list = mcdata.list, dims = 1:30)
+mcdata.integrated <- IntegrateData(anchorset = mcdata.anchors, dims = 1:30)
 library(ggplot2) 
 library(cowplot)
 # switch to integrated assay. The variable features of this assay are automatically
 # set during IntegrateData
-DefaultAssay(gcdata.integrated) <- "integrated"
+DefaultAssay(mcdata.integrated) <- "integrated"
 
 # Run the standard workflow for visualization and clustering
-gcdata.integrated <- ScaleData(gcdata.integrated, verbose = FALSE)
-gcdata.integrated <- RunPCA(gcdata.integrated, npcs = 40, verbose = FALSE)
+mcdata.integrated <- ScaleData(mcdata.integrated, verbose = FALSE)
+mcdata.integrated <- RunPCA(mcdata.integrated, npcs = 40, verbose = FALSE)
 
-gcdata.integrated <- FindNeighbors(gcdata.integrated, reduction = "pca", dims = 1:40, k.param = 20)
-gcdata.integrated <- FindClusters(gcdata.integrated, resolution = 0.4, algorithm = 1, random.seed = 100)
+mcdata.integrated <- FindNeighbors(mcdata.integrated, reduction = "pca", dims = 1:40, k.param = 20)
+mcdata.integrated <- FindClusters(mcdata.integrated, resolution = 0.4, algorithm = 1, random.seed = 100)
 
-gcdata.integrated <- RunUMAP(gcdata.integrated, reduction = "pca", dims = 1:40)
-gcdata.integrated <- RunTSNE(gcdata.integrated, reduction = "pca", dims = 1:40)
+mcdata.integrated <- RunUMAP(mcdata.integrated, reduction = "pca", dims = 1:40)
+mcdata.integrated <- RunTSNE(mcdata.integrated, reduction = "pca", dims = 1:40)
 
-p1 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "treatment")
-p <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "cell_line", label = TRUE) 
-p3 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "treat", label = TRUE) 
-p4 <- DimPlot(gcdata.integrated, reduction = "umap", group.by = "seurat_clusters", label = TRUE) 
+p1 <- DimPlot(mcdata.integrated, reduction = "umap", group.by = "treatment")
+p <- DimPlot(mcdata.integrated, reduction = "umap", group.by = "cell_line", label = TRUE) 
+p3 <- DimPlot(mcdata.integrated, reduction = "umap", group.by = "treat", label = TRUE) 
+p4 <- DimPlot(mcdata.integrated, reduction = "umap", group.by = "seurat_clusters", label = TRUE) 
 plot_grid(p2, p1, p3,p4, ncols = 4)
 
 
@@ -674,18 +674,18 @@ plot_grid(p2, p1, p3,p4, ncols = 4)
 s.genes <- Seurat::cc.genes$s.genes
 g1.genes <- Seurat::cc.genes$g1.genes
 g2m.genes <- Seurat::cc.genes$g2m.genes
-gcdata.integrated <- CellCycleScoring(object = gcdata.integrated, g1.features = g1.genes, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
-p<-DimPlot(gcdata.integrated, reduction = "umap", group.by = "Phase",cols = c( "#0cad00", "#6a089c","#43dae8"))+theme(legend.text = element_text(size = 20),legend.key.size = unit(0.7, "cm"))
+mcdata.integrated <- CellCycleScoring(object = mcdata.integrated, g1.features = g1.genes, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+p<-DimPlot(mcdata.integrated, reduction = "umap", group.by = "Phase",cols = c( "#0cad00", "#6a089c","#43dae8"))+theme(legend.text = element_text(size = 20),legend.key.size = unit(0.7, "cm"))
 p+labs(title="", color='Cell cycle phase')+theme(legend.title = element_text(colour="darkblue"))+guides(colour = guide_legend(override.aes = list(size=4)))
 
 ```
 
 # Regressing out cell cycle genes
 ```{r}
-gcdata.integrated$CC.Difference <- gcdata.integrated$S.Score - gcdata.integrated$G2M.Score
-gcdata.integrated <- ScaleData(gcdata.integrated, vars.to.regress = "CC.Difference", features = rownames(gcdata.integrated))
-gcdata.integrated <- RunPCA(gcdata.integrated, features = VariableFeatures(gcdata.integrated), nfeatures.print = 10)
-gcdata.integrated <- RunPCA(gcdata.integrated, features = c(s.genes, g2m.genes))
+mcdata.integrated$CC.Difference <- mcdata.integrated$S.Score - mcdata.integrated$G2M.Score
+mcdata.integrated <- ScaleData(mcdata.integrated, vars.to.regress = "CC.Difference", features = rownames(mcdata.integrated))
+mcdata.integrated <- RunPCA(mcdata.integrated, features = VariableFeatures(mcdata.integrated), nfeatures.print = 10)
+mcdata.integrated <- RunPCA(mcdata.integrated, features = c(s.genes, g2m.genes))
 DimPlot()
 
 ```
@@ -693,31 +693,31 @@ DimPlot()
 
 # Identification of highly variable features 
 ```{r}
-gcdata.integrated$treat<-fct_relevel(gcdata.integrated$treat,"Untreated_SKMel30","Untreated_IPC298","Untreated_MelJuso","Untreated_M20","Treated 24h_SKMel30","Treated 24h_IPC298","Treated 24h_MelJuso","Treated 24h_M20","Treated 4days_SKMel30","Treated 4days_IPC298", "Treated 4days_MelJuso","Treated 4days_M20", "Treated long_SKMel30",  "Treated long_IPC298", "Treated long_MelJuso", "Treated long_M20")
-seuratMarkers<- FindAllMarkers(gcdata.integrated, min.pct=0.2)
+mcdata.integrated$treat<-fct_relevel(mcdata.integrated$treat,"Untreated_SKMel30","Untreated_IPC298","Untreated_MelJuso","Untreated_M20","Treated 24h_SKMel30","Treated 24h_IPC298","Treated 24h_MelJuso","Treated 24h_M20","Treated 4days_SKMel30","Treated 4days_IPC298", "Treated 4days_MelJuso","Treated 4days_M20", "Treated long_SKMel30",  "Treated long_IPC298", "Treated long_MelJuso", "Treated long_M20")
+seuratMarkers<- FindAllMarkers(mcdata.integrated, min.pct=0.2)
 top10 <- seuratMarkers %>% group_by(cluster) %>% top_n(3, avg_log2FC)
 
-DoHeatmap(object = gcdata.integrated, features = top10$gene, group.colors = col, label = TRUE, size = 8) + scale_fill_gradientn(colors = c("#77e6ed", "grey88", "#ff0000"))+ theme( axis.text.y = element_text(face = "bold", color = "#454141",  size = 15))
+DoHeatmap(object = mcdata.integrated, features = top10$gene, group.colors = col, label = TRUE, size = 8) + scale_fill_gradientn(colors = c("#77e6ed", "grey88", "#ff0000"))+ theme( axis.text.y = element_text(face = "bold", color = "#454141",  size = 15))
 #or
 occurrence <- top10[!duplicated(top10$gene),]
-DotPlot(gcdata.integrated, features = as.character(occurrence$gene), group.by = "treat") + RotatedAxis()+ xlab("") + ylab("Days of MEK1/2i+CDK4/6i treatment") + theme(axis.ticks.y = element_blank())+ scale_y_discrete(labels=c("0d","1d","4d", "33d"))+ theme(axis.text.x = element_text(face = "bold", color = "#993333", size = 12, angle = 45), axis.text.y = element_text(face = "bold", color = "blue",  size = 12, angle = 90))
+DotPlot(mcdata.integrated, features = as.character(occurrence$gene), group.by = "treat") + RotatedAxis()+ xlab("") + ylab("Days of MEK1/2i+CDK4/6i treatment") + theme(axis.ticks.y = element_blank())+ scale_y_discrete(labels=c("0d","1d","4d", "33d"))+ theme(axis.text.x = element_text(face = "bold", color = "#993333", size = 12, angle = 45), axis.text.y = element_text(face = "bold", color = "blue",  size = 12, angle = 90))
 
 ```
 
 #Cell proportion plot
 ```{r}
-get_group_proportions <- function (gcdata.integrated, group.by = "active.ident") {
+get_group_proportions <- function (mcdata.integrated, group.by = "active.ident") {
   if (group.by == "active.ident") {
-    gcdata.integrated[["active.ident"]] <- gcdata.integrated@active.ident
+    mcdata.integrated[["active.ident"]] <- mcdata.integrated@active.ident
   }
-  total_populations <- gcdata.integrated@meta.data %>% group_by(treat) %>% summarize (total.pop = n())
-  count_populations <- gcdata.integrated@meta.data %>% group_by_at(vars(group.by, "treat")) %>% summarize (n = n())
+  total_populations <- mcdata.integrated@meta.data %>% group_by(treat) %>% summarize (total.pop = n())
+  count_populations <- mcdata.integrated@meta.data %>% group_by_at(vars(group.by, "treat")) %>% summarize (n = n())
   count_populations <- left_join(count_populations, total_populations, by = "treat")
   count_populations <- count_populations %>% mutate (proportion = n/total.pop)
   count_populations
 }
 
-plot_group_proportions <- function (gcdata.integrated, graph.type = "dodge") {
+plot_group_proportions <- function (mcdata.integrated, graph.type = "dodge") {
   count_populations <- get_group_proportions(seuratobj)
   if (graph.type == "dodge"){
   ggplot(count_populations, aes (x = treat, y = proportion))+
@@ -741,8 +741,8 @@ a+scale_fill_manual(values=col,labels = c("0d SKMel30", "0d IPC298", "0d MelJuso
 
 genesig <- read.table(paste0("./Gene_signature.txt"), skip = 2)
 genesig <- as.vector(genesig$V1)
-genesig.found <- which(toupper(rownames(gcdata.integrated@assays$RNA@data)) %in% genesig)
-n.expressed.genesig <- Matrix::colSums(gcdata.integrated@assays$RNA@data[genesig.found, ])
-gcdata.integrated <- AddMetaData(object = gcdata.integrated, metadata = n.expressed.genesig, col.name = "Pigmentation")
-FeaturePlot(gcdata.integrated, features = c("Gene_siganture", label=T))
+genesig.found <- which(toupper(rownames(mcdata.integrated@assays$RNA@data)) %in% genesig)
+n.expressed.genesig <- Matrix::colSums(mcdata.integrated@assays$RNA@data[genesig.found, ])
+mcdata.integrated <- AddMetaData(object = mcdata.integrated, metadata = n.expressed.genesig, col.name = "Pigmentation")
+FeaturePlot(mcdata.integrated, features = c("Gene_siganture", label=T))
 ```
